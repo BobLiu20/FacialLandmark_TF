@@ -29,7 +29,7 @@ def train(prefix, **arg_dict):
 
         # Create a variable to track the global step.
         global_step = tf.Variable(0, name='global_step', trainable=False)
-        learning_rate = tf.train.exponential_decay(arg_dict['learning_rate'], global_step, 10000, 0.5, staircase=True)
+        learning_rate = tf.train.exponential_decay(arg_dict['learning_rate'], global_step, 30000, 0.5, staircase=True)
         # Use the optimizer to apply the gradients that minimize the loss
         # (and also increment the global step counter) as a single training step.
         optimizer = tf.train.AdamOptimizer(learning_rate)
@@ -52,25 +52,28 @@ def train(prefix, **arg_dict):
 
         print ("Start to training...")
         start_time = time.time()
-        while True:
+        while not _batch_reader.should_stop():
             with tf.device('/gpu:0'):
                 batch = _batch_generator.next()
                 _, ploss, step, lr = sess.run([train_op, loss, global_step, learning_rate], 
                                              feed_dict={images: batch[0], point_labels: batch[1]})
                 if step % 10 == 0:
                     end_time = time.time()
-                    cost_time = end_time - start_time
+                    cost_time, start_time = end_time - start_time, end_time
                     sample_per_sec = int(10 * batch_size / cost_time)
                     sec_per_step = cost_time / 10.0
                     print ('[%s] epochs: %d, step: %d, lr: %f, landmark_loss: %.4f, sample/s: %d, sec/step: %.3f' % (
                            datetime.datetime.now().strftime("%Y%m%d_%H%M%S"), 
                            _batch_reader.get_epoch(), step, lr, ploss, sample_per_sec, sec_per_step))
-            if step % 1024 == 0 or _batch_reader.get_epoch() > arg_dict['max_epoch']:
-                checkpoint_path = os.path.join(prefix,'model.ckpt')
+            if step % 1024 == 0:
+                checkpoint_path = os.path.join(prefix, 'model.ckpt')
                 saver.save(sess, checkpoint_path)
                 print ('Saved checkpoint to %s' % checkpoint_path)
-                if _batch_reader.get_epoch() > arg_dict['max_epoch']:
-                    break
+        checkpoint_path = os.path.join(prefix, 'model.ckpt')
+        saver.save(sess, checkpoint_path)
+        print ('\nReview training parameter:\n%s\n'%(str(arg_dict)))
+        print ('Saved checkpoint to %s' % checkpoint_path)
+        print ('Bye Bye!')
 
 def main():
     parser = argparse.ArgumentParser()
@@ -79,7 +82,7 @@ def main():
     parser.add_argument('--working_root', type=str, default='/world/data-c9/liubofang/training/landmarks/celeba/working')
     parser.add_argument('--batch_size', type=int, default=512, help="Batch size for training")
     parser.add_argument('--landmark_type', type=int, default=5, help="The number of points. 5 or 83")
-    parser.add_argument('--max_epoch', type=int, default=100, help="Training will be stoped in this case.")
+    parser.add_argument('--max_epoch', type=int, default=1000, help="Training will be stoped in this case.")
     parser.add_argument('--img_size', type=int, default=112, help="The size of input for model")
     parser.add_argument('--max_angle', type=int, default=10, help="Use for image augmentation")
     parser.add_argument('--process_num', type=int, default=30, help="The number of process to preprocess image.")

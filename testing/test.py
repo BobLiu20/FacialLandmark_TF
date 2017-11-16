@@ -67,7 +67,7 @@ if __name__ == "__main__":
         for (x, y) in points:
             y = int(y * h) 
             x = int(x * w) 
-            cv2.circle(img, (x, y), 1, (0, 255, 0), -1)
+            cv2.circle(img, (x, y), 1, (0, 255, 255), -1)
         cv2.imwrite(os.path.join(out_folder, os.path.basename(im_path)), img)
         print ("predicting %s"%im_path)
 
