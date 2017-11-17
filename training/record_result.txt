@@ -1,0 +1,23 @@
+5/fanet8ss_conv_1_1_16_16_16_exp/fold_0
+min loss: 0.0004
+max_angle: 10
+img_size: 112
+benchmark: 0.03881    1.01%
+
+5/fanet8ss_conv_1_1_16_16_16_exp/fold_1
+min loss: 0.0005
+max_angle: 180
+img_size: 112
+benchmark: 0.04611    2.08%
+
+5/fanet8ss_conv_1_1_16_16_16_exp/fold_2
+min loss: 0.0003 (sometimes to 0.0002. 173epochs)
+max_angle: 10
+img_size: 128
+benchmark: 0.03337    0.40%
+
+5/fanet8ss_conv_1_1_16_16_16_exp/fold_3
+min loss: 
+max_angle: 180
+img_size: 128
+

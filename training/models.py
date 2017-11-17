@@ -1,6 +1,6 @@
 import sys
 import tensorflow as tf
-from tensorflow.contrib.layers import conv2d, max_pool2d, fully_connected as fc
+from tensorflow.contrib.layers import conv2d, max_pool2d, flatten, fully_connected as fc
 from tensorflow.contrib.layers.python.layers import initializers
 from tensorflow.contrib.framework import arg_scope
 
@@ -17,15 +17,16 @@ def fanet8ss_conv_1_1_16_16_16_exp(input_tensor, point_label):
     h_conv7 = conv2d(h_conv6, 64, 3, stride=2)
     h_conv8 = conv2d(h_conv7, 128, 3)
     h_pool1 = max_pool2d(h_conv8, 2, 2)
-    h_pool1.set_shape([None, 3, 3, 128])
-    h_pool1_flat = tf.reshape(h_pool1, [-1, 3*3*128])
+    # h_pool1.set_shape([None, 3, 3, 128])
+    # h_pool1_flat = tf.reshape(h_pool1, [-1, 3*3*128])
+    h_pool1_flat = flatten(h_pool1)
     h_fc1 = fc(h_pool1_flat, 512)
     point = fc(h_fc1, point_label, activation_fn=None)
     return point
 
 def get_l2_loss(logits, labels, batch_size):
-    loss = tf.nn.l2_loss(tf.subtract(logits,labels))
-    loss = tf.truediv(loss,tf.constant(batch_size,dtype=tf.float32))
+    loss = tf.nn.l2_loss(tf.subtract(logits, labels))
+    loss = tf.truediv(loss, tf.constant(batch_size, dtype=tf.float32))
     batchnorm_updates = tf.get_collection(tf.GraphKeys.UPDATE_OPS)
     batchnorm_updates_op = tf.group(*batchnorm_updates)
     with tf.control_dependencies([batchnorm_updates_op]):

@@ -49,7 +49,7 @@ class LandmarkAugment(object):
             if img_format == 'RGB':
                 image= cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
             landmarks = sample[1]
-            (x1, y1, x2, y2), _, _, _ = self.__get_bbox_of_landmarks(image, landmarks, pad_rate, 0.5)
+            (x1, y1, x2, y2), _, _, _ = self.get_bbox_of_landmarks(image, landmarks, pad_rate, 0.5)
             new_sample_list.append(
                 (cv2.imencode('.jpg', image[y1:y2, x1:x2])[1], landmarks - (x1, y1))
             )
@@ -107,7 +107,7 @@ class LandmarkAugment(object):
         Raises:
             No
         '''
-        (x1, y1, x2, y2), new_size, need_pad, (p_x, p_y, p_w, p_h) = self.__get_bbox_of_landmarks(
+        (x1, y1, x2, y2), new_size, need_pad, (p_x, p_y, p_w, p_h) = self.get_bbox_of_landmarks(
             image, landmarks, scale_range, shift_rate=0.3)
         box_image = image[y1:y2, x1:x2]
         if need_pad:
@@ -116,7 +116,7 @@ class LandmarkAugment(object):
         landmarks = (landmarks - (x1 - p_x, y1 - p_y)) / (new_size, new_size)
         return box_image, landmarks
 
-    def __get_bbox_of_landmarks(self, image, landmarks, scale_range, shift_rate=0.3):
+    def get_bbox_of_landmarks(self, image, landmarks, scale_range, shift_rate=0.3):
         '''According to landmark box to generate a new bigger bbox
         Args:
             image: a numpy type
