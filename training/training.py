@@ -23,7 +23,7 @@ def train(prefix, **arg_dict):
         images = tf.placeholder(tf.float32, shape=[batch_size, img_size, img_size, 3])
         point_labels = tf.placeholder(tf.float32, shape=[batch_size, num_labels])
 
-        logits = models.init(arg_dict['model'], images, num_labels)
+        logits = models.init(arg_dict['model'], images, num_labels, is_training=True)
 
         loss = models.get_l2_loss(logits, point_labels, batch_size)
 
@@ -79,23 +79,25 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--input_paths', type=str, nargs='+',
                         default='/world/data-c9/liubofang/dataset_original/CelebA/full_path_zf_bbox_pts.txt')
-    parser.add_argument('--working_root', type=str, default='/world/data-c9/liubofang/training/landmarks/celeba/working')
+    parser.add_argument('--working_root', type=str, default='/world/data-c9/liubofang/training/landmarks/celeba')
     parser.add_argument('--batch_size', type=int, default=512, help="Batch size for training")
     parser.add_argument('--landmark_type', type=int, default=5, help="The number of points. 5 or 83")
     parser.add_argument('--max_epoch', type=int, default=1000, help="Training will be stoped in this case.")
-    parser.add_argument('--img_size', type=int, default=112, help="The size of input for model")
+    parser.add_argument('--img_size', type=int, default=128, help="The size of input for model")
     parser.add_argument('--max_angle', type=int, default=10, help="Use for image augmentation")
     parser.add_argument('--process_num', type=int, default=30, help="The number of process to preprocess image.")
     parser.add_argument('--learning_rate', type=float, default=0.001, help="lr")
     parser.add_argument('--model', type=str, default='fanet8ss_conv_1_1_16_16_16_exp', help="Model name. Check models.py")
     parser.add_argument('--restore_ckpt', type=str, help="Resume training from special ckpt.")
-    parser.add_argument('--fold', type=int, default=0, help="Saving path index")
+    parser.add_argument('--try', type=int, default=0, help="Saving path index")
     parser.add_argument('--gpu_device', type=str, default='7', help="GPU index")
     parser.add_argument('--img_format', type=str, default='RGB', help="The color format for training.")
     parser.add_argument('--buffer2memory', type=bool, default=False, 
                         help="Read all image to memory to speed up training. Make sure enough memory in your device.")
     arg_dict = vars(parser.parse_args())
-    prefix = '%s/%d/%s/fold_%s' % (arg_dict['working_root'], arg_dict['landmark_type'], arg_dict['model'], arg_dict['fold'])
+    prefix = '%s/%d/%s/size%d_angle%d_try%d' % (
+        arg_dict['working_root'], arg_dict['landmark_type'], arg_dict['model'], 
+        arg_dict['img_size'], arg_dict['max_angle'], arg_dict['try'])
     if not os.path.exists(prefix):
         os.makedirs(prefix)
     # set up TF environment

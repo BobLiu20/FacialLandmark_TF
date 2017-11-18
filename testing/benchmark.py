@@ -62,7 +62,7 @@ if __name__ == "__main__":
     parser.add_argument('--model', type=str, default='fanet8ss_conv_1_1_16_16_16_exp')
     parser.add_argument('--landmark_type', type=int, default=5) #5 or 83
     parser.add_argument('--dataset_name', type=str, default="lfw_5590_net_7876")
-    parser.add_argument('--img_size', type=int, default=112)
+    parser.add_argument('--img_size', type=int, default=128)
     parser.add_argument('--img_format', type=str, default='RGB')
     parser.add_argument('--gpu_device', type=str, default='7')
     parser.add_argument('--debug', type=bool, default=False)

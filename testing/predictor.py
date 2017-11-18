@@ -21,7 +21,8 @@ class Predictor():
         with tf.Graph().as_default():
             self.placeholder = tf.placeholder(dtype=tf.float32, 
                 shape=[None, self._arg_dict['img_size'], self._arg_dict['img_size'], 3])
-            self.logits = models.init(self._arg_dict['model'], self.placeholder, self._arg_dict['landmark_type']*2)
+            self.logits = models.init(self._arg_dict['model'], self.placeholder, 
+                                     self._arg_dict['landmark_type']*2, is_training=False)
             saver = tf.train.Saver()
             with tf.device('/gpu:0'):
                 self.sess = tf.Session(config=tf.ConfigProto(gpu_options=tf.GPUOptions(allow_growth=True)))

@@ -17,7 +17,12 @@ img_size: 128
 benchmark: 0.03337    0.40%
 
 5/fanet8ss_conv_1_1_16_16_16_exp/fold_3
-min loss: 
+min loss: 0.0004-0.0005 (600epochs)
 max_angle: 180
 img_size: 128
+benchmark:0.04451     2.11%
+
+5/fanet8ss_conv_1_1_16_16_16_exp_3fc/size128_angle10_try0
+min loss: 0.0002-0.0003 (178epochs)
+benchmark:0.03271     0.55%
 
