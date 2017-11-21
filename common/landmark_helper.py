@@ -54,6 +54,24 @@ class LandmarkHelper(object):
         return landmarks.reshape([-1, 2])
 
     @staticmethod
+    def get_scales(landmark_type):
+        '''
+        use for scales bbox according to bbox of landmarks
+        Args:
+            landmark_type: len of landmarks
+        Returns:
+            (min, max), min crop
+        Raises:
+            unsupport type
+        '''
+        if landmark_type == 5:
+            return (2.7, 3.3), 4.5
+        elif landmark_type == 83:
+            return (1.2, 1.5), 2.6
+        else:
+            raise Exception("Unsupport landmark type...")
+
+    @staticmethod
     def __landmark5_txt_parse(line):
         '''
         Args:

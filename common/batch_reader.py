@@ -104,7 +104,8 @@ class BatchReader():
         # read all image to memory to speed up!
         if self._kwargs['buffer2memory']:
             print ("[Process %d] Start to read image to memory! Count=%d"%(idx, len(sample_list)))
-            sample_list = __landmark_augment.mini_crop_by_landmarks(sample_list, 4.5, self._kwargs['img_format'])
+            sample_list = __landmark_augment.mini_crop_by_landmarks(
+                sample_list, LandmarkHelper.get_scales(self._kwargs['landmark_type'])[1], self._kwargs['img_format'])
             print ("[Process %d] Read all image to memory finish!"%(idx))
         sample_cnt = 0 # count for one batch
         image_list, landmarks_list = [], [] # one batch list
@@ -118,7 +119,7 @@ class BatchReader():
                 else:
                     image = cv2.imdecode(sample[0], cv2.CV_LOAD_IMAGE_COLOR)
                 landmarks = sample[1].copy()# keep deep copy
-                scale_range = (2.7, 3.3)
+                scale_range = LandmarkHelper.get_scales(self._kwargs['landmark_type'])[0]
                 image_new, landmarks_new = __landmark_augment.augment(image, landmarks, self._kwargs['img_size'],
                                             self._kwargs['max_angle'], scale_range)
                 # sent a batch
@@ -145,16 +146,17 @@ class BatchReader():
 # use for unit test
 if __name__ == '__main__':
     kwargs = {
-        'input_paths': "/world/data-c9/liubofang/dataset_original/CelebA/full_path_zf_bbox_pts.txt",
-        'landmark_type': 5,
-        #'input_paths': "/world/data-c22/AR/landmarks/CelebA/CelebA_19w_washed.txt",
-        #'landmark_type': 83,
+        #'input_paths': "/world/data-c9/liubofang/dataset_original/CelebA/full_path_zf_bbox_pts.txt",
+        #'landmark_type': 5,
+        'input_paths': "/world/data-c9/liubofang/dataset_original/CelebA/CelebA_19w_83points_bbox_angle.txt",
+        'landmark_type': 83,
         'batch_size': 512,
-        'process_num': 30,
+        'process_num': 2,
         'img_format': 'RGB',
-        'img_size': 112,
+        'img_size': 128,
         'max_angle': 10,
-        'buffer2memory': True,
+        'max_epoch':1,
+        'buffer2memory': False,
     }
     b = BatchReader(**kwargs)
     g = b.batch_generator()
@@ -163,19 +165,20 @@ if __name__ == '__main__':
         os.makedirs(output_folder)
     import time
     start_time = time.time()
-    for i in range(1000000):
+    while not b.should_stop():
         end_time = time.time()
-        print ("get new batch...step: %d. epoch: %d. cost: %.3f"%(
-                i, b.get_epoch(), end_time-start_time))
+        print ("get new batch...epoch: %d. cost: %.3f"%(
+                b.get_epoch(), end_time-start_time))
         start_time = end_time
         batch_image, batch_landmarks = g.next()
         for idx, (image, landmarks) in enumerate(zip(batch_image, batch_landmarks)):
             if idx > 20: # only see first 10
                 break
             landmarks = landmarks.reshape([-1, 2])
-            for l in landmarks:
-                ii = tuple(l * (kwargs['img_size'], kwargs['img_size']))
-                cv2.circle(image, (int(ii[0]), int(ii[1])), 2, (0,255,0), -1)
+            image = cv2.resize(image, (1080, 1080)) # for debug
+            for i, l in enumerate(landmarks):
+                ii = tuple(l * image.shape[:2])
+                cv2.circle(image, (int(ii[0]), int(ii[1])), 1, (0,255,0), -1)
+                cv2.putText(image, str(i), (int(ii[0]), int(ii[1])), cv2.FONT_HERSHEY_SIMPLEX, 1, 2)
             cv2.imwrite("%s/%d.jpg"%(output_folder, idx), image)
-    print ("Done...Press ctrl+c to exit me")
 

@@ -1,15 +1,3 @@
-5/fanet8ss_conv_1_1_16_16_16_exp/fold_0
-min loss: 0.0004
-max_angle: 10
-img_size: 112
-benchmark: 0.03881    1.01%
-
-5/fanet8ss_conv_1_1_16_16_16_exp/fold_1
-min loss: 0.0005
-max_angle: 180
-img_size: 112
-benchmark: 0.04611    2.08%
-
 5/fanet8ss_conv_1_1_16_16_16_exp/fold_2
 min loss: 0.0003 (sometimes to 0.0002. 173epochs)
 max_angle: 10
@@ -22,7 +10,11 @@ max_angle: 180
 img_size: 128
 benchmark:0.04451     2.11%
 
-5/fanet8ss_conv_1_1_16_16_16_exp_3fc/size128_angle10_try0
-min loss: 0.0002-0.0003 (178epochs)
-benchmark:0.03271     0.55%
+5/fanet8ss_inference/size128_angle10_try670
+min loss: 0.0002-0.0003 (92epochs)
+benchmark:0.03112     0.46%
+
+5/fanet8ss_inference/size128_angle180_try67
+min loss: 0.0004-0.0005 (178epochs)
+benchmark:0.04271     1.47%
 

@@ -12,11 +12,10 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('--model_path', type=str,
         default='/world/data-c9/liubofang/training/landmarks/celeba/working/5/fanet8ss_conv_1_1_16_16_16_exp/fold_0/model.ckpt')
-    parser.add_argument('--model', type=str, default='fanet8ss_conv_1_1_16_16_16_exp')
+    parser.add_argument('--model', type=str, default='fanet8ss_inference')
     parser.add_argument('--landmark_type', type=int, default=5) #5 or 83
     parser.add_argument('--img_size', type=int, default=128)
-    parser.add_argument('--images_folder', type=str, 
-        default='/home/liubofang/other_script/bob_training_set_自己的训练集制作/images_crop')
+    parser.add_argument('--images_folder', type=str, default='../common/output_tmp/')
     parser.add_argument('--img_format',type=str,default='RGB')
     parser.add_argument('--gpu_device', type=str, default='7')
     arg_dict = vars(parser.parse_args())
