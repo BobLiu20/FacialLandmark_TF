@@ -52,7 +52,7 @@ def datasetReader(landmark_type, dataset_name):
             if image is None:
                 print "Skip: ", path
                 continue
-            landmarks = np.fromstring(line[1], dtype=int, count=166, sep=',')
+            landmarks = np.fromstring(line[1], dtype=float, count=166, sep=',')
             landmarks = landmarks.reshape((-1, 2))
             scale_range = LandmarkHelper.get_scales(landmark_type)[0]
             scale = (scale_range[0] + scale_range[1]) / 2.0
