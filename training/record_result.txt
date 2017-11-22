@@ -1,3 +1,4 @@
+############ training_sigle_gpu.py
 5/fanet8ss_conv_1_1_16_16_16_exp/fold_2
 min loss: 0.0003 (sometimes to 0.0002. 173epochs)
 max_angle: 10
@@ -17,4 +18,14 @@ benchmark:0.03112     0.46%
 5/fanet8ss_inference/size128_angle180_try67
 min loss: 0.0004-0.0005 (178epochs)
 benchmark:0.04271     1.47%
+
+
+############ training.py
+5/fanet8ss_inference/size128_angle10_try11
+min loss: 0.000044 (epoch 334)
+benchmark:0.02932       0.32%
+
+83/fanet8ss_inference/size128_angle10_try1
+min loss: 0.0001   (epoch 117)
+mean error: 0.03234		0.56%
 
